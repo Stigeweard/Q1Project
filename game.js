@@ -480,7 +480,7 @@ $(document).ready(function() {
         })
     }
 
-    function GameBoard() {
+    function GameBoard(pile, play) {
         this.root = [];
         this.pile = pile || [];
         this.play = play || [];
@@ -495,8 +495,8 @@ $(document).ready(function() {
 
     GameBoard.prototype.traverseBF = function(callback) {
         for (var i = 0; i < this.root.length; i++) {
-            this.root[i]
-        }
+            this.root[i];
+        };
     };
 
 
@@ -519,19 +519,30 @@ $(document).ready(function() {
             currentBoard.root[i].right.left = currentBoard.root[i].left.right;
             currentBoard.root[i].right.right = new CardNode();
         }
-        // creates tier four
+        // creates tier four - TODO: refactor
         currentBoard.root[0].left.left.left = new CardNode();
         currentBoard.root[0].left.left.right = new CardNode();
         currentBoard.root[0].left.right.left = currentBoard.root[0].left.left.right;
         currentBoard.root[0].left.right.right = new CardNode();
         currentBoard.root[0].right.right.left = currentBoard.root[0].left.right.right;
         currentBoard.root[0].right.right.right = new CardNode();
-
-
+        currentBoard.root[1].left.left.left = currentBoard.root[0].right.right.right;
+        currentBoard.root[1].left.left.right = new CardNode();
+        currentBoard.root[1].left.right.left = currentBoard.root[1].left.left.right;
+        currentBoard.root[1].left.right.right = new CardNode();
+        currentBoard.root[1].right.right.left = currentBoard.root[1].left.right.right
+        currentBoard.root[1].right.right.right = new CardNode();
+        currentBoard.root[2].left.left.left = currentBoard.root[1].right.right.right;
+        currentBoard.root[2].left.left.right = new CardNode();
+        currentBoard.root[2].left.right.left = currentBoard.root[2].left.left.right;
+        currentBoard.root[2].left.right.right = new CardNode();
+        currentBoard.root[2].right.right.left = currentBoard.root[2].left.right.right
+        currentBoard.root[2].right.right.right = new CardNode();
+        console.log(currentBoard);
 
         return currentBoard;
 
-    }
+    };
 
 
 
@@ -547,7 +558,7 @@ $(document).ready(function() {
             success: function(data) {
 
 
-
+                createBoardStructure();
 
                 // adds flip to each card object, cant get prototype thing to work
                 data.cards.map(function(elem) {
@@ -570,53 +581,55 @@ $(document).ready(function() {
                         }
                     }
                 })
-
-                for (var i = 0; i < 3; i++) {
-                    data.cards[i].flip();
-                    data.cards[i].boardLoc = 'firstTier';
-                    currentBoard.root.push(new CardNode(data.cards[i]));
+                for (var i = 0; i < data.cards.length; i++) {
+                    data.cards[i]
                 }
-                for (var i = 3; i < currentBoard.root.length + ; i++) { // all wrong
-                    currentBoard.root[i].left = new CardNode(data.cards[i])
-                    currentBoard.root[i].right = new CardNode(data.cards[i])
-                }
+                // for (var i = 0; i < 3; i++) {
+                //     data.cards[i].flip();
+                //     data.cards[i].boardLoc = 'firstTier';
+                //     currentBoard.root.push(new CardNode(data.cards[i]));
+                // }
+                // for (var i = 3; i < currentBoard.root.length + ; i++) { // all wrong
+                //     currentBoard.root[i].left = new CardNode(data.cards[i])
+                //     currentBoard.root[i].right = new CardNode(data.cards[i])
+                // }
 
                 // for all items in root, assign a new node to left and right passing in data.cards with an incrementing index
                 // for all nodes created in left and right, create nodes for their left and right while index < 28
 
                 // all other pyramid cards are flipped and assigned their location, updating currentBoard
-                for (i = 3; i < 9; i++) {
-                    data.cards[i].flip();
-                    data.cards[i].boardLoc = 'secondTier';
-                    currentBoard.root.children.push(data.cards[i])
-
-                }
-                for (i = 19; i < 25; i++) {
-                    data.cards[i].flip();
-                    data.cards[i].boardLoc = 'thirdTier';
-                    currentBoard.thirdTier.push(data.cards[i])
-                }
-                for (i = 25; i < 28; i++) {
-                    data.cards[i].boardLoc = 'fourthTier';
-                    data.cards[i].inPlay = true;
-                    currentBoard.fourthTier.push(data.cards[i])
-
-                }
-                data.cards[i].boardLoc = 'play';
-                data.cards[i].addedToPlayPile = true;
-                currentBoard.play.push(data.cards[i])
-                for (i = 29; i < data.cards.length; i++) {
-                    data.cards[i].flip();
-                    data.cards[i].boardLoc = 'pile';
-                    currentBoard.pile.push(data.cards[i])
-                }
-                // set top card on pile to be in play
-                currentBoard.pile[currentBoard.pile.length - 1].inPlay = true;
-                deck = data.cards.reduce(function(result, element) {
-                    result[element.code] = element;
-                    return result;
-                }, {});
-                uncover(currentBoard);
+                // for (i = 3; i < 9; i++) {
+                //     data.cards[i].flip();
+                //     data.cards[i].boardLoc = 'secondTier';
+                //     currentBoard.root.children.push(data.cards[i])
+                //
+                // }
+                // for (i = 19; i < 25; i++) {
+                //     data.cards[i].flip();
+                //     data.cards[i].boardLoc = 'thirdTier';
+                //     currentBoard.thirdTier.push(data.cards[i])
+                // }
+                // for (i = 25; i < 28; i++) {
+                //     data.cards[i].boardLoc = 'fourthTier';
+                //     data.cards[i].inPlay = true;
+                //     currentBoard.fourthTier.push(data.cards[i])
+                //
+                // }
+                // data.cards[i].boardLoc = 'play';
+                // data.cards[i].addedToPlayPile = true;
+                // currentBoard.play.push(data.cards[i])
+                // for (i = 29; i < data.cards.length; i++) {
+                //     data.cards[i].flip();
+                //     data.cards[i].boardLoc = 'pile';
+                //     currentBoard.pile.push(data.cards[i])
+                // }
+                // // set top card on pile to be in play
+                // currentBoard.pile[currentBoard.pile.length - 1].inPlay = true;
+                // deck = data.cards.reduce(function(result, element) {
+                //     result[element.code] = element;
+                //     return result;
+                // }, {});
+                // uncover(currentBoard);
 
             },
             error: errorMsg
