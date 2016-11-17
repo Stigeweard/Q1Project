@@ -26,14 +26,7 @@ $(document).ready(function() {
     $('.cardBoxpile').on('click', pileClick);
     $('#reset').click(resetHand); // TODO: doesnt work yet
 
-    function GameBoard(firstTier, secondTier, thirdTier, fourthTier, pile, play) {
-        this.firstTier = firstTier || [];
-        this.secondTier = secondTier || [];
-        this.thirdTier = thirdTier || [];
-        this.fourthTier = fourthTier || [];
-        this.pile = pile || [];
-        this.play = play || [];
-    }
+
 
     GameBoard.prototype.refresh = function(targetCard, tier) {
         for (var i = 0; i < this[tier].length; i++) {
@@ -161,7 +154,9 @@ $(document).ready(function() {
         };
         if (leftPyramidFinished && midPyramidFinished && rightPyramidFinished) {
             currentScore += 15;
-            setTimeout(function(){ alert(`You won with a score of ${currentScore}!! Try resetting to see if you can do better!`); }, 3000);
+            setTimeout(function() {
+                alert(`You won with a score of ${currentScore}!! Try resetting to see if you can do better!`);
+            }, 3000);
         }
 
     };
@@ -471,6 +466,8 @@ $(document).ready(function() {
         })
     }
 
+
+
     function newDeck() {
         $.ajax({
             url: 'https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1',
@@ -483,6 +480,64 @@ $(document).ready(function() {
         })
     }
 
+    function GameBoard() {
+        this.root = [];
+        this.pile = pile || [];
+        this.play = play || [];
+    }
+
+    function CardNode(data) {
+        this.data = data || null;
+        this.parent = null;
+        this.left = null;
+        this.right = null;
+    }
+
+    GameBoard.prototype.traverseBF = function(callback) {
+        for (var i = 0; i < this.root.length; i++) {
+            this.root[i]
+        }
+    };
+
+
+    function createBoardStructure() {
+        currentBoard = new GameBoard();
+
+        // creates tier one
+        currentBoard.root.push(new CardNode());
+        currentBoard.root.push(new CardNode());
+        currentBoard.root.push(new CardNode());
+        // creates tier two
+        for (var i = 0; i < currentBoard.root.length; i++) {
+            currentBoard.root[i].left = new CardNode();
+            currentBoard.root[i].right = new CardNode();
+        }
+        // creates tier three
+        for (var i = 0; i < currentBoard.root.length; i++) {
+            currentBoard.root[i].left.left = new CardNode();
+            currentBoard.root[i].left.right = new CardNode();
+            currentBoard.root[i].right.left = currentBoard.root[i].left.right;
+            currentBoard.root[i].right.right = new CardNode();
+        }
+        // creates tier four
+        currentBoard.root[0].left.left.left = new CardNode();
+        currentBoard.root[0].left.left.right = new CardNode();
+        currentBoard.root[0].left.right.left = currentBoard.root[0].left.left.right;
+        currentBoard.root[0].left.right.right = new CardNode();
+        currentBoard.root[0].right.right.left = currentBoard.root[0].left.right.right;
+        currentBoard.root[0].right.right.right = new CardNode();
+
+
+
+        return currentBoard;
+
+    }
+
+
+
+
+
+
     // creates a new GameBoard and fills it with API data along with custom properties and methods
     // also adds all those new card objects to a deck object
     function populateBoard() {
@@ -491,7 +546,8 @@ $(document).ready(function() {
             method: 'GET',
             success: function(data) {
 
-                currentBoard = new GameBoard();
+
+
 
                 // adds flip to each card object, cant get prototype thing to work
                 data.cards.map(function(elem) {
@@ -515,38 +571,36 @@ $(document).ready(function() {
                     }
                 })
 
-                // // TODO: understand prototype access
-                // data.cards.prototype.flip = function() {
-                // let pngCard = this.images.png
-                // let back = './images/cardBack.png';
-                // if (this.image !== back) {
-                //     this.image = back;
-                // } else {
-                //     this.image = pngCard;
-                // }
-                // }
-
-                // sets fourth tier cards in play
-                for (var i = 0; i < 10; i++) {
-                    data.cards[i].boardLoc = 'fourthTier';
-                    data.cards[i].inPlay = true;
-                    currentBoard.fourthTier.push(data.cards[i])
+                for (var i = 0; i < 3; i++) {
+                    data.cards[i].flip();
+                    data.cards[i].boardLoc = 'firstTier';
+                    currentBoard.root.push(new CardNode(data.cards[i]));
                 }
+                for (var i = 3; i < currentBoard.root.length + ; i++) { // all wrong
+                    currentBoard.root[i].left = new CardNode(data.cards[i])
+                    currentBoard.root[i].right = new CardNode(data.cards[i])
+                }
+
+                // for all items in root, assign a new node to left and right passing in data.cards with an incrementing index
+                // for all nodes created in left and right, create nodes for their left and right while index < 28
+
                 // all other pyramid cards are flipped and assigned their location, updating currentBoard
-                for (i = 10; i < 19; i++) {
+                for (i = 3; i < 9; i++) {
+                    data.cards[i].flip();
+                    data.cards[i].boardLoc = 'secondTier';
+                    currentBoard.root.children.push(data.cards[i])
+
+                }
+                for (i = 19; i < 25; i++) {
                     data.cards[i].flip();
                     data.cards[i].boardLoc = 'thirdTier';
                     currentBoard.thirdTier.push(data.cards[i])
                 }
-                for (i = 19; i < 25; i++) {
-                    data.cards[i].flip();
-                    data.cards[i].boardLoc = 'secondTier';
-                    currentBoard.secondTier.push(data.cards[i])
-                }
                 for (i = 25; i < 28; i++) {
-                    data.cards[i].flip();
-                    data.cards[i].boardLoc = 'firstTier';
-                    currentBoard.firstTier.push(data.cards[i])
+                    data.cards[i].boardLoc = 'fourthTier';
+                    data.cards[i].inPlay = true;
+                    currentBoard.fourthTier.push(data.cards[i])
+
                 }
                 data.cards[i].boardLoc = 'play';
                 data.cards[i].addedToPlayPile = true;
