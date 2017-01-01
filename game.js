@@ -480,18 +480,7 @@ $(document).ready(function() {
         })
     }
 
-    function GameBoard(pile, play) {
-        this.root = [];
-        this.pile = pile || [];
-        this.play = play || [];
-    }
 
-    function CardNode(data) {
-        this.data = data || null;
-        this.parent = null;
-        this.left = null;
-        this.right = null;
-    }
 
     GameBoard.prototype.traverseBF = function(callback) {
         for (var i = 0; i < this.root.length; i++) {
@@ -499,50 +488,100 @@ $(document).ready(function() {
         };
     };
 
+    /*
+        function createBoardStructure() {
+            currentBoard = new GameBoard();
+
+            // creates tier one
+            currentBoard.root.push(new CardNode());
+            currentBoard.root.push(new CardNode());
+            currentBoard.root.push(new CardNode());
+            // creates tier two
+            for (var i = 0; i < currentBoard.root.length; i++) {
+                currentBoard.root[i].left = new CardNode();
+                currentBoard.root[i].right = new CardNode();
+            }
+            // creates tier three
+            for (var i = 0; i < currentBoard.root.length; i++) {
+                currentBoard.root[i].left.left = new CardNode();
+                currentBoard.root[i].left.right = new CardNode();
+                currentBoard.root[i].right.left = currentBoard.root[i].left.right;
+                currentBoard.root[i].right.right = new CardNode();
+            }
+            // creates tier four - TODO: refactor
+            currentBoard.root[0].left.left.left = new CardNode();
+            currentBoard.root[0].left.left.right = new CardNode();
+            currentBoard.root[0].left.right.left = currentBoard.root[0].left.left.right;
+            currentBoard.root[0].left.right.right = new CardNode();
+            currentBoard.root[0].right.right.left = currentBoard.root[0].left.right.right;
+            currentBoard.root[0].right.right.right = new CardNode();
+            currentBoard.root[1].left.left.left = currentBoard.root[0].right.right.right;
+            currentBoard.root[1].left.left.right = new CardNode();
+            currentBoard.root[1].left.right.left = currentBoard.root[1].left.left.right;
+            currentBoard.root[1].left.right.right = new CardNode();
+            currentBoard.root[1].right.right.left = currentBoard.root[1].left.right.right
+            currentBoard.root[1].right.right.right = new CardNode();
+            currentBoard.root[2].left.left.left = currentBoard.root[1].right.right.right;
+            currentBoard.root[2].left.left.right = new CardNode();
+            currentBoard.root[2].left.right.left = currentBoard.root[2].left.left.right;
+            currentBoard.root[2].left.right.right = new CardNode();
+            currentBoard.root[2].right.right.left = currentBoard.root[2].left.right.right
+            currentBoard.root[2].right.right.right = new CardNode();
+            console.log(currentBoard);
+
+            return currentBoard;
+
+        };
+    */
+
+    function GameBoard(pile, play) {
+        this.root = [];
+        this.pile = pile || [];
+        this.play = play || [];
+    }
+
+    function CardNode(data, left, right) {
+        this.data = data || null;
+        this.parent = null;
+        this.left = left;
+        this.right = right;
+    }
 
     function createBoardStructure() {
-        currentBoard = new GameBoard();
-
-        // creates tier one
-        currentBoard.root.push(new CardNode());
-        currentBoard.root.push(new CardNode());
-        currentBoard.root.push(new CardNode());
-        // creates tier two
+        let currentBoard = new GameBoard();
+        const logicArr = [
+            [1, 11, 20],
+            [2, 3],
+            [4, 5],
+            [5, 6],
+            [7, 8],
+            [8, 9],
+            [9, 10], null, null, null, null, [12, 13],
+            [14, 15],
+            [15, 16],
+            [10, 17],
+            [17, 18],
+            [18, 19], null, null, null, [21, 22],
+            [23, 24],
+            [24, 25],
+            [19, 26],
+            [26, 27],
+            [27, 28], null, null, null
+        ];
+        currentBoard.root = logicArr[0];
         for (var i = 0; i < currentBoard.root.length; i++) {
-            currentBoard.root[i].left = new CardNode();
-            currentBoard.root[i].right = new CardNode();
-        }
-        // creates tier three
-        for (var i = 0; i < currentBoard.root.length; i++) {
-            currentBoard.root[i].left.left = new CardNode();
-            currentBoard.root[i].left.right = new CardNode();
-            currentBoard.root[i].right.left = currentBoard.root[i].left.right;
-            currentBoard.root[i].right.right = new CardNode();
-        }
-        // creates tier four - TODO: refactor
-        currentBoard.root[0].left.left.left = new CardNode();
-        currentBoard.root[0].left.left.right = new CardNode();
-        currentBoard.root[0].left.right.left = currentBoard.root[0].left.left.right;
-        currentBoard.root[0].left.right.right = new CardNode();
-        currentBoard.root[0].right.right.left = currentBoard.root[0].left.right.right;
-        currentBoard.root[0].right.right.right = new CardNode();
-        currentBoard.root[1].left.left.left = currentBoard.root[0].right.right.right;
-        currentBoard.root[1].left.left.right = new CardNode();
-        currentBoard.root[1].left.right.left = currentBoard.root[1].left.left.right;
-        currentBoard.root[1].left.right.right = new CardNode();
-        currentBoard.root[1].right.right.left = currentBoard.root[1].left.right.right
-        currentBoard.root[1].right.right.right = new CardNode();
-        currentBoard.root[2].left.left.left = currentBoard.root[1].right.right.right;
-        currentBoard.root[2].left.left.right = new CardNode();
-        currentBoard.root[2].left.right.left = currentBoard.root[2].left.left.right;
-        currentBoard.root[2].left.right.right = new CardNode();
-        currentBoard.root[2].right.right.left = currentBoard.root[2].left.right.right
-        currentBoard.root[2].right.right.right = new CardNode();
-        console.log(currentBoard);
-
-        return currentBoard;
-
-    };
+            
+        };
+        for (var i = 1; i < logicArr.length; i++) {
+            if (logicArr[i] !== null) {
+                currentBoard.
+            } else {}
+        };
+        // for (let i = 0; i < 29; i++) {
+        //     array[i]
+        // }
+        console.log('length:', logicArr.length);
+    }
 
 
 
