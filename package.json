@@ -1,0 +1,31 @@
+{
+    "name": "tripeaks-solitaire",
+    "version": "1.0.0",
+    "description": "Tri-peaks solitaire project implementing a tree data structure",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Stigeweard/Q2Project.git"
+    },
+    "author": "Charles Harding",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Stigeweard/Q2Project/issues"
+    },
+    "homepage": "https://github.com/Stigeweard/Q2Project#readme",
+    "devDependencies": {
+        "chai": "^3.5.0",
+        "mocha": "^3.2.0",
+        "supertest": "^2.0.1"
+    },
+    "dependencies": {
+        "bcrypt-as-promised": "^1.1.0",
+        "body-parser": "^1.15.2",
+        "express": "^4.14.0",
+        "knex": "^0.12.6",
+        "pg": "^6.1.2"
+    }
+}
