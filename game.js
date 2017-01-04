@@ -13,7 +13,7 @@ $(document).ready(function() {
 
     let deckID = null;
     let currentBoard = null;
-    let deck = null;
+    let deck = {};
     let currentScore = 0;
     let scoreStreak = 0;
     let leftPyramidFinished = false;
@@ -97,42 +97,8 @@ $(document).ready(function() {
 
     function createBoardStructure() {
         currentBoard = new GameBoard();
+        console.log(currentBoard);
     }
-
-    function scoreMultVictoryCheck() {
-        for (var i = 0; i < currentBoard['firstTier'].length; i++) {
-            console.log(currentBoard['firstTier'][0].addedToPlayPile);
-            if (currentBoard['firstTier'][0].addedToPlayPile) {
-                switch (i) {
-                    case 0:
-                        if (!leftPyramidFinished) {
-                            currentScore += 15;
-                            leftPyramidFinished = true;
-                        };
-                        break;
-                    case 1:
-                        if (!midPyramidFinished) {
-                            currentScore += 15;
-                            midPyramidFinished = true;
-                        };
-                        break;
-                    case 2:
-                        if (!rightPyramidFinished) {
-                            currentScore += 15;
-                            rightPyramidFinished = true;
-                        };
-                        break;
-                };
-            }
-        };
-        if (leftPyramidFinished && midPyramidFinished && rightPyramidFinished) {
-            currentScore += 15;
-            setTimeout(function() {
-                alert(`You won with a score of ${currentScore}!! Try resetting to see if you can do better!`);
-            }, 3000);
-        }
-
-    };
 
     function resetScore() {
         currentScore = 0;
@@ -142,7 +108,7 @@ $(document).ready(function() {
     function calculateAddScore(targetCard, tier) {
         scoreStreak++;
         currentScore += scoreStreak;
-        scoreMultVictoryCheck();
+        // scoreMultVictoryCheck();
         refreshScore();
     }
 
@@ -161,7 +127,6 @@ $(document).ready(function() {
     }
 
     function pileClick(e) {
-        console.log(e.target);
         let topPileCard = currentBoard.pile[currentBoard.pile.length - 1].code;
         if (deck[topPileCard].inPlay) {
             calculatePileScore();
@@ -176,7 +141,7 @@ $(document).ready(function() {
 
     function cardClick(e) {
         let targetCard = e.target.id;
-        let targetTier = e.target.alt.split(' ')[0]
+        let targetTier = e.target.alt.split(' ')[0];
 
         if (deck[targetCard].inPlay) {
             // targetCard at 0 because suit doesnt matter in this game ex: 6D = 6 of diamonds
@@ -187,7 +152,8 @@ $(document).ready(function() {
                 // update score
                 calculateAddScore(targetCard, targetTier);
 
-                // handling targetCard status in both truth objects
+                // handling targetCard status in both objects
+                console.log(targetCard, targetTier);
                 currentBoard.refresh(targetCard, targetTier)
 
                 // if flipInfo.flipNeeded === true, then flip(flipIndex/targetCard, flipTier)
@@ -472,7 +438,7 @@ $(document).ready(function() {
             method: 'GET',
             success: function(data) {
 
-
+                currentBoard = null;
                 createBoardStructure();
 
                 // adds flip to each card object, cant get prototype thing to work
@@ -504,8 +470,11 @@ $(document).ready(function() {
                         currentBoard.pile.push(data.cards[i])
                     }
                 }
+                currentBoard.pile[currentBoard.pile.length-1].inPlay = true;
                 currentBoard.play.push(data.cards[data.cards.length - 1])
-                    // first 28 cards thrown into pyramids
+                for (var i = 0; i < data.cards.length; i++) {
+                    deck[data.cards[i].code] = data.cards[i];
+                }
                 uncover(currentBoard);
 
             },
