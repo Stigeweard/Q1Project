@@ -38,12 +38,16 @@ $(document).ready(function() {
         [26, 27],
         [27, 28], null, null, null
     ];
+    const firstTier = [1, 11, 20];
+    const secondTier = [2, 3, 12, 13, 21, 22];
+    const thirdTier = [4, 5, 6, 14, 15, 16, 23, 24, 25];
+    const tierFour = [7, 8, 9, 10, 17, 18, 19, 26, 27, 28];
     let nodeObj = {};
 
     $('#newHand').click(newHand);
     $('.cardBox').on('click', cardClick);
     $('.cardBoxpile').on('click', pileClick);
-    $('#reset').click(resetHand); // TODO: doesnt work yet
+    $('#reset').click(resetHand);
 
     function GameBoard(pile, play) {
         this.root = fetchNodes(logicArr[0]);
@@ -63,7 +67,7 @@ $(document).ready(function() {
 
     GameBoard.prototype.traverseBF = function(callback) {
         for (var i = 0; i < this.root.length; i++) {
-            this.root[i];
+
         };
     };
 
@@ -92,14 +96,7 @@ $(document).ready(function() {
     };
 
     function createBoardStructure() {
-        let currentBoard = new GameBoard();
-        // index is card number, value is card numbers of (nodes left and right)
-        //
-        // const tierOne = [1, 11, 20];
-        // const tierTwo = [2, 3, 12, 13, 21, 22];
-        // const tierThree = [4, 5, 6, 14, 15, 16, 23, 24, 25];
-        // const tierFour = [7, 8, 9, 10, 17, 18, 19, 26, 27, 28];
-        console.log(currentBoard, nodeObj);
+        currentBoard = new GameBoard();
     }
 
     function scoreMultVictoryCheck() {
@@ -328,10 +325,73 @@ $(document).ready(function() {
     }
 
     function uncover(board) {
-        for (var prop in board) {
-            if (typeof(board[prop]) !== 'function') {
-                popCards(board[prop], prop)
-            }
+        popCards(board.pile, 'pile');
+        popCards(board.play, 'play');
+        for (var i = 0; i < tierFour.length; i++) {
+            let tierFourCard = nodeObj[tierFour[i]].data;
+            tierFourCard.flip();
+            let $card = $('<img></img>');
+            let $cardDiv = $('<div></div>');
+            $cardDiv.addClass('cardDiv');
+            $card.addClass('card added')
+                .attr('id', tierFourCard.code)
+                .attr('src', tierFourCard['image'])
+                .attr('alt', `fourthTier Front of playing card`);
+            $cardDiv.append($card);
+            $(`.fourthTier .cardBox`).append($cardDiv);
+        }
+        popNodeArray(firstTier);
+        popNodeArray(secondTier);
+        popNodeArray(thirdTier);
+
+        popPyramids(firstTier, 'firstTier');
+        popPyramids(secondTier, 'secondTier');
+        popPyramids(thirdTier, 'thirdTier');
+
+    }
+
+    function popNodeArray(tier) {
+        for (var i = 0; i < tier.length; i++) {
+            tier[i] = nodeObj[tier[i]];
+        }
+    }
+
+    function popPyramids(cardArr, tier) {
+        let cardsPerPyramid = cardArr.length / 3;
+        let image = null;
+        // TODO: make card face hidden
+        for (var i = 0; i < cardsPerPyramid; i++) {
+            let $card = $('<img></img>');
+            let $cardDiv = $('<div></div>');
+            $cardDiv.addClass('cardDiv');
+            $card.addClass('card added')
+                .attr('id', cardArr[i].data.code)
+                .attr('src', cardArr[i].data['image'])
+                .attr('alt', `${tier} Back of playing card`);
+            $cardDiv.append($card);
+            $(`.leftPyramid .${tier} .cardBox`).append($cardDiv);
+        }
+        for (var i = cardsPerPyramid; i < cardsPerPyramid * 2; i++) {
+            let $card = $('<img></img>');
+            let $cardDiv = $('<div></div>');
+            $cardDiv.addClass('cardDiv');
+            $card.addClass('card added')
+                .attr('id', cardArr[i].data.code)
+                .attr('src', cardArr[i].data['image'])
+                .attr('alt', `${tier} Back of playing card`);
+            $cardDiv.append($card);
+            $(`.midPyramid .${tier} .cardBox`).append($cardDiv);
+        }
+        for (var i = cardsPerPyramid * 2; i < cardArr.length; i++) {
+            let $card = $('<img></img>');
+            let $cardDiv = $('<div></div>');
+            $cardDiv.addClass('cardDiv');
+            $card.addClass('card added')
+                .attr('id', cardArr[i].data.code)
+                .attr('src', cardArr[i].data['image'])
+                .attr('alt', `${tier} Back of playing card`);
+            $cardDiv.append($card);
+            $(`.rightPyramid .${tier} .cardBox`).append($cardDiv);
         }
     }
 
@@ -364,58 +424,8 @@ $(document).ready(function() {
                 $cardDiv.append($card);
                 $(`.cardBox${tier}`).append($cardDiv);
             }
-        } else if (tier === 'fourthTier') {
-            for (var i = 0; i < cardArr.length; i++) {
-                let $card = $('<img></img>');
-                let $cardDiv = $('<div></div>');
-                $cardDiv.addClass('cardDiv');
-                $card.addClass('card added')
-                    .attr('id', cardArr[i].code)
-                    .attr('src', cardArr[i]['image'])
-                    .attr('alt', `${tier} Front of playing card`);
-                $cardDiv.append($card);
-                $(`.${tier} .cardBox`).append($cardDiv);
-            }
-        } else {
-            let cardsPerPyramid = cardArr.length / 3;
-            let image = null;
-
-            // TODO: make card face hidden
-            for (var i = 0; i < cardsPerPyramid; i++) {
-                let $card = $('<img></img>');
-                let $cardDiv = $('<div></div>');
-                $cardDiv.addClass('cardDiv');
-                $card.addClass('card added')
-                    .attr('id', cardArr[i].code)
-                    .attr('src', cardArr[i]['image'])
-                    .attr('alt', `${tier} Back of playing card`);
-                $cardDiv.append($card);
-                $(`.leftPyramid .${tier} .cardBox`).append($cardDiv);
-            }
-            for (var i = cardsPerPyramid; i < cardsPerPyramid * 2; i++) {
-                let $card = $('<img></img>');
-                let $cardDiv = $('<div></div>');
-                $cardDiv.addClass('cardDiv');
-                $card.addClass('card added')
-                    .attr('id', cardArr[i].code)
-                    .attr('src', cardArr[i]['image'])
-                    .attr('alt', `${tier} Back of playing card`);
-                $cardDiv.append($card);
-                $(`.midPyramid .${tier} .cardBox`).append($cardDiv);
-            }
-            for (var i = cardsPerPyramid * 2; i < cardArr.length; i++) {
-                let $card = $('<img></img>');
-                let $cardDiv = $('<div></div>');
-                $cardDiv.addClass('cardDiv');
-                $card.addClass('card added')
-                    .attr('id', cardArr[i].code)
-                    .attr('src', cardArr[i]['image'])
-                    .attr('alt', `${tier} Back of playing card`);
-                $cardDiv.append($card);
-                $(`.rightPyramid .${tier} .cardBox`).append($cardDiv);
-            }
         }
-    }
+    };
 
     // AJAX functions:
     // shuffles current deck instead of calling API for a new one
@@ -454,60 +464,6 @@ $(document).ready(function() {
         })
     };
 
-
-
-    /*
-        function createBoardStructure() {
-            currentBoard = new GameBoard();
-
-            // creates tier one
-            currentBoard.root.push(new CardNode());
-            currentBoard.root.push(new CardNode());
-            currentBoard.root.push(new CardNode());
-            // creates tier two
-            for (var i = 0; i < currentBoard.root.length; i++) {
-                currentBoard.root[i].left = new CardNode();
-                currentBoard.root[i].right = new CardNode();
-            }
-            // creates tier three
-            for (var i = 0; i < currentBoard.root.length; i++) {
-                currentBoard.root[i].left.left = new CardNode();
-                currentBoard.root[i].left.right = new CardNode();
-                currentBoard.root[i].right.left = currentBoard.root[i].left.right;
-                currentBoard.root[i].right.right = new CardNode();
-            }
-            // creates tier four - TODO: refactor
-            currentBoard.root[0].left.left.left = new CardNode();
-            currentBoard.root[0].left.left.right = new CardNode();
-            currentBoard.root[0].left.right.left = currentBoard.root[0].left.left.right;
-            currentBoard.root[0].left.right.right = new CardNode();
-            currentBoard.root[0].right.right.left = currentBoard.root[0].left.right.right;
-            currentBoard.root[0].right.right.right = new CardNode();
-            currentBoard.root[1].left.left.left = currentBoard.root[0].right.right.right;
-            currentBoard.root[1].left.left.right = new CardNode();
-            currentBoard.root[1].left.right.left = currentBoard.root[1].left.left.right;
-            currentBoard.root[1].left.right.right = new CardNode();
-            currentBoard.root[1].right.right.left = currentBoard.root[1].left.right.right
-            currentBoard.root[1].right.right.right = new CardNode();
-            currentBoard.root[2].left.left.left = currentBoard.root[1].right.right.right;
-            currentBoard.root[2].left.left.right = new CardNode();
-            currentBoard.root[2].left.right.left = currentBoard.root[2].left.left.right;
-            currentBoard.root[2].left.right.right = new CardNode();
-            currentBoard.root[2].right.right.left = currentBoard.root[2].left.right.right
-            currentBoard.root[2].right.right.right = new CardNode();
-            console.log(currentBoard);
-
-            return currentBoard;
-
-        };
-    */
-
-
-
-
-
-
-
     // creates a new GameBoard and fills it with API data along with custom properties and methods
     // also adds all those new card objects to a deck object
     function populateBoard() {
@@ -540,35 +496,17 @@ $(document).ready(function() {
                         }
                     }
                 });
-                for (var i = 0; i < data.cards.length-1; i++) {
+                for (var i = 0; i < data.cards.length - 1; i++) {
+                    data.cards[i].flip()
                     if (i < 28) {
-                        nodeObj[i+1].data = data.cards[i];
+                        nodeObj[i + 1].data = data.cards[i];
                     } else {
                         currentBoard.pile.push(data.cards[i])
                     }
                 }
-
-                // first 28 cards thrown into pyramids
-
-
-
-
-
-                // data.cards[i].boardLoc = 'play';
-                // data.cards[i].addedToPlayPile = true;
-                // currentBoard.play.push(data.cards[i])
-                // for (i = 29; i < data.cards.length; i++) {
-                //     data.cards[i].flip();
-                //     data.cards[i].boardLoc = 'pile';
-                //     currentBoard.pile.push(data.cards[i])
-                // }
-                // // set top card on pile to be in play
-                // currentBoard.pile[currentBoard.pile.length - 1].inPlay = true;
-                // deck = data.cards.reduce(function(result, element) {
-                //     result[element.code] = element;
-                //     return result;
-                // }, {});
-                // uncover(currentBoard);
+                currentBoard.play.push(data.cards[data.cards.length - 1])
+                    // first 28 cards thrown into pyramids
+                uncover(currentBoard);
 
             },
             error: errorMsg
