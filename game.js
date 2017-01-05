@@ -15,6 +15,7 @@ $(document).ready(function() {
     let pyramidTwoDone = false;
     let pyramidThreeDone = false;
     let boardCopy = null;
+    let reseted = false;
     const logicArr = [
         [1, 11, 20],
         [2, 3],
@@ -219,6 +220,9 @@ $(document).ready(function() {
     }
 
     function resetHand() {
+        // currently any flipped cards will incorrectly stay flipped
+        reseted = true;
+        scoreStreak = 0;
         clearStage();
         currentBoard = jQuery.extend(true, {}, boardCopy);
         uncover(currentBoard);
@@ -226,6 +230,8 @@ $(document).ready(function() {
     }
 
     function newHand() {
+        reseted = false;
+        scoreStreak = 0;
         pyramidOneDone = false;
         pyramidTwoDone = false;
         pyramidThreeDone = false;
@@ -242,6 +248,7 @@ $(document).ready(function() {
     }
 
     function clearStage() {
+        console.log('hallo');
         $('.added').remove();
         $('.cardDiv').remove();
     }
@@ -251,7 +258,9 @@ $(document).ready(function() {
         popCards(board.play, 'play');
         for (var i = 0; i < tierFour.length; i++) {
             let tierFourCard = nodeObj[tierFour[i]].data;
-            tierFourCard.flip();
+            if (!reseted) {
+                tierFourCard.flip();
+            }
             let $card = $('<img></img>');
             let $cardDiv = $('<div></div>');
             $cardDiv.addClass('cardDiv');
@@ -262,9 +271,11 @@ $(document).ready(function() {
             $cardDiv.append($card);
             $(`.fourthTier .cardBox`).append($cardDiv);
         }
-        popNodeArray(firstTier);
-        popNodeArray(secondTier);
-        popNodeArray(thirdTier);
+        if (!reseted) {
+            popNodeArray(firstTier);
+            popNodeArray(secondTier);
+            popNodeArray(thirdTier);
+        }
         popPyramids(firstTier, 'firstTier');
         popPyramids(secondTier, 'secondTier');
         popPyramids(thirdTier, 'thirdTier');
