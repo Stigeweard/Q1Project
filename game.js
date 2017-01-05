@@ -14,6 +14,7 @@ $(document).ready(function() {
     let pyramidOneDone = false;
     let pyramidTwoDone = false;
     let pyramidThreeDone = false;
+    let boardCopy = null;
     const logicArr = [
         [1, 11, 20],
         [2, 3],
@@ -220,6 +221,9 @@ $(document).ready(function() {
     function resetHand() {
         clearStage();
         retrieveDeck();
+        currentBoard = jQuery.extend(true, {}, boardCopy);
+        uncover(currentBoard);
+        resetScore();
     }
 
     function newHand() {
@@ -420,6 +424,7 @@ $(document).ready(function() {
                 for (var i = 0; i < data.cards.length; i++) {
                     deck[data.cards[i].code] = data.cards[i];
                 }
+                boardCopy = jQuery.extend(true, {}, currentBoard);
                 uncover(currentBoard);
             },
             error: errorMsg
