@@ -383,7 +383,8 @@ $(document).ready(function() {
     // creates a new GameBoard and fills it with API data along with custom properties and methods
     // also adds all those new card objects to a deck object
     function populateBoard() {
-        $.ajax({            url: `https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`,
+        $.ajax({
+            url: `https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`,
             method: 'GET',
             success: function(data) {
                 currentBoard = new GameBoard();
