@@ -3,8 +3,6 @@ $(document).ready(function() {
     // IMPORTANT NOTES:
     // * for some reason adblock plugin will cause bugs
     // * first tier is the top tier (3 total cards)
-    // * Alt text doesn't currently change on flipping
-    // TODO: incorporate image changing on addToPlay function
 
     let deckID = null;
     let currentBoard = null;
@@ -402,7 +400,6 @@ $(document).ready(function() {
             method: 'GET',
             success: function(data) {
                 currentBoard = new GameBoard();
-                // adds flip to each card object, cant get prototype thing to work
                 data.cards.map(function(elem) {
                     elem.inPlay = false;
                     elem.addedToPlayPile = false;

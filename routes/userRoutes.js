@@ -13,8 +13,8 @@ router.get('/users', (req, res) => {
 });
 
 router.post('/users', (req, res, next) => {
-    let username = req.body.username;
-    let password = req.body.password;
+    const username = req.body.username;
+    const password = req.body.password;
     if (!username || username.trim() === '') {
         const err = new Error('Username must not be blank');
         err.status = 400;
@@ -51,6 +51,61 @@ router.post('/users', (req, res, next) => {
         .catch((err) => {
             next(err);
         });
+});
+
+router.post('/session', (req, res, next) => {
+    const username = req.body.username;
+    const password = req.body.password;
+
+    if (!username || username.trim() === '') {
+        const err = new Error('Username must not be blank');
+        err.status = 400;
+
+        return next(err);
+    }
+
+    if (!password || password.trim() === '') {
+        const err = new Error('Password must not be blank');
+        err.status = 400;
+
+        return next(err);
+    }
+
+    let user;
+
+    knex('users')
+        .where('name', username)
+        .first()
+        .then((row) => {
+            if (!row) {
+                const err = new Error('Unauthorized');
+                err.status = 401;
+
+                throw err;
+            }
+
+            user = row
+
+            return bcrypt.compare(password, row.hashed_password);
+        })
+        .then(() => {
+            req.session.userId = user.id;
+            res.sendStatus(200);
+        })
+        .catch(bcrypt.MISMATCH_ERROR, () => {
+            const err = new Error('Unauthorized');
+            err.status = 401;
+
+            throw err;
+        })
+        .catch((err) => {
+            next(err);
+        });
+});
+
+app.delete('/session', (req, res) => {
+    req.session = null;
+    res.sendStatus(200);
 });
 
 module.exports = router;

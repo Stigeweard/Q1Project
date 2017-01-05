@@ -24,14 +24,17 @@ $(document).ready(function() {
         let loginNeeded = false;
         for (var i = 0; i < users.length; i++) {
             if (userObj.username === users[i].name) {
-                // check if password is correct and login/redirect
                 loginNeeded = true;
-                loginAndRedirect()
+                loginAndRedirect(userObj)
             }
         }
         if (!loginNeeded) {
             $.post('/users', userObj);
         }
+    }
+
+    function loginAndRedirect(userObj) {
+        // do this
     }
 
 });
