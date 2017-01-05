@@ -1,5 +1,17 @@
 $(document).ready(function() {
 
+    if (!Function.prototype.bind) { // check if native implementation available
+        Function.prototype.bind = function() {
+            var fn = this,
+                args = Array.prototype.slice.call(arguments),
+                object = args.shift();
+            return function() {
+                return fn.apply(object,
+                    args.concat(Array.prototype.slice.call(arguments)));
+            };
+        };
+    }
+
     // IMPORTANT NOTES:
     // * for some reason adblock plugin will cause bugs
     // * first tier is the top tier (3 total cards)
@@ -16,9 +28,9 @@ $(document).ready(function() {
     let deck = {};
     let currentScore = 0;
     let scoreStreak = 0;
-    let leftPyramidFinished = false;
-    let midPyramidFinished = false;
-    let rightPyramidFinished = false;
+    let pyramidOneDone = false;
+    let pyramidTwoDone = false;
+    let pyramidThreeDone = false;
     const logicArr = [
         [1, 11, 20],
         [2, 3],
@@ -38,10 +50,10 @@ $(document).ready(function() {
         [26, 27],
         [27, 28], null, null, null
     ];
-    const firstTier = [1, 11, 20];
-    const secondTier = [2, 3, 12, 13, 21, 22];
-    const thirdTier = [4, 5, 6, 14, 15, 16, 23, 24, 25];
-    const tierFour = [7, 8, 9, 10, 17, 18, 19, 26, 27, 28];
+    let firstTier = [1, 11, 20];
+    let secondTier = [2, 3, 12, 13, 21, 22];
+    let thirdTier = [4, 5, 6, 14, 15, 16, 23, 24, 25];
+    let tierFour = [7, 8, 9, 10, 17, 18, 19, 26, 27, 28];
     let nodeObj = {};
 
     $('#newHand').click(newHand);
@@ -55,21 +67,20 @@ $(document).ready(function() {
         this.play = play || [];
     };
 
-    GameBoard.prototype.refresh = function(targetCard, tier) {
-        for (var i = 0; i < this[tier].length; i++) {
-            if (this[tier][i].code === targetCard) {
-                this[tier][i].addToPlay();
-                deck[targetCard].addToPlay();
-                this.play.push(deck[targetCard]);
+    GameBoard.prototype.refresh = function(targetCard) {
+        for (var key in nodeObj) {
+            if (nodeObj[key].data.code === targetCard) {
+                nodeObj[key].data.addedToPlayPile = true;
+                this.play.push(nodeObj[key].data);
             }
         }
     };
 
-    GameBoard.prototype.traverseBF = function(callback) {
-        for (var i = 0; i < this.root.length; i++) {
-
-        };
-    };
+    // GameBoard.prototype.traverseBF = function(callback) {
+    //     for (var i = 0; i < this.root.length; i++) {
+    //
+    //     };
+    // };
 
     function CardNode(data, position, children) {
         this.data = data || null;
@@ -78,8 +89,20 @@ $(document).ready(function() {
         this.children = children;
     };
 
-    CardNode.prototype.left = () => this.children[0];
-    CardNode.prototype.right = () => this.children[1];
+    CardNode.prototype.left = function() {
+        if (this.children.length > 1) {
+            return this.children[0];
+        } else {
+            console.log('no chillrens');
+        }
+    }
+    CardNode.prototype.right = function() {
+        if (this.children.length > 1) {
+            return this.children[1];
+        } else {
+            console.log('no chillrens');
+        }
+    }
 
     function fetchNodes(arr) {
         let nodeList = [];
@@ -89,32 +112,52 @@ $(document).ready(function() {
                     let newNode = new CardNode(null, elem, fetchNodes(logicArr[elem]));
                     nodeObj[elem] = newNode;
                     nodeList.push(newNode);
+                } else {
+                    nodeList.push(nodeObj[elem]);
                 }
             })
         }
         return nodeList;
     };
 
-    function createBoardStructure() {
-        currentBoard = new GameBoard();
-        console.log(currentBoard);
-    }
-
     function resetScore() {
         currentScore = 0;
         refreshScore();
     }
 
-    function calculateAddScore(targetCard, tier) {
+    function calculateAddScore() {
         scoreStreak++;
         currentScore += scoreStreak;
-        // scoreMultVictoryCheck();
+        victoryCheck();
         refreshScore();
+    }
+
+    function victoryCheck() {
+
+        if (nodeObj[1].data.addedToPlayPile && !pyramidOneDone) {
+            console.log('done with one');
+            pyramidOneDone = true;
+            currentScore += 15;
+        }
+        if (nodeObj[11].data.addedToPlayPile && !pyramidTwoDone) {
+            console.log('done with two');
+            pyramidTwoDone = true;
+            currentScore += 15;
+        }
+        if (nodeObj[20].data.addedToPlayPile && !pyramidThreeDone) {
+            console.log('done with three');
+            pyramidThreeDone = true;
+            currentScore += 15;
+        }
+        if (pyramidOneDone && pyramidTwoDone && pyramidThreeDone) {
+            console.log('done with all');
+            currentScore += 15;
+        }
     }
 
     function calculatePileScore() {
         scoreStreak = 0;
-        currentScore = currentScore - 5;
+        currentScore -= 5;
         refreshScore();
     }
 
@@ -122,16 +165,11 @@ $(document).ready(function() {
         $('#scoreSpan').text(currentScore)
     }
 
-    function log(e) {
-        console.log(e.target);
-    }
-
     function pileClick(e) {
         let topPileCard = currentBoard.pile[currentBoard.pile.length - 1].code;
         if (deck[topPileCard].inPlay) {
             calculatePileScore();
             renderCardMove(topPileCard);
-            turnCardOver(currentBoard.pile.length - 1, 'pile');
             currentBoard.play.push(currentBoard.pile.pop());
             // assign the new topPileCard
             topPileCard = currentBoard.pile[currentBoard.pile.length - 1].code;
@@ -141,40 +179,24 @@ $(document).ready(function() {
 
     function cardClick(e) {
         let targetCard = e.target.id;
-        let targetTier = e.target.alt.split(' ')[0];
-
         if (deck[targetCard].inPlay) {
             // targetCard at 0 because suit doesnt matter in this game ex: 6D = 6 of diamonds
             if (validMove(targetCard[0])) {
                 // replace image on play pile
                 renderCardMove(targetCard);
-
-                // update score
-                calculateAddScore(targetCard, targetTier);
-
-                // handling targetCard status in both objects
-                console.log(targetCard, targetTier);
-                currentBoard.refresh(targetCard, targetTier)
-
-                // if flipInfo.flipNeeded === true, then flip(flipIndex/targetCard, flipTier)
-                let flipInfo = flipCheck(targetCard, targetTier);
-                if (flipInfo.length > 0) {
-                    for (var i = 0; i < flipInfo.length; i++) {
-                        turnCardOver(flipInfo[i].flipIndex, flipInfo[i].flipTier);
-                    }
-                }
+                currentBoard.refresh(targetCard)
+                flipCheck();
+                calculateAddScore(targetCard);
             }
         } else {
             console.log('card is not in play');
         }
     }
 
-    function turnCardOver(index, tier) {
-        // don't use flip because it will flip back and forth
-        let targetCard = currentBoard[tier][index].code;
-        deck[targetCard].image = deck[targetCard].images.png;
-        $(`#${targetCard}`).attr('src', `${deck[targetCard].image}`);
-        deck[targetCard].inPlay = true;
+    function turnCardOver(nodeData) {
+        nodeData.inPlay = true;
+        nodeData.image = nodeData.images.png;
+        $(`#${nodeData.code}`).attr('src', `${nodeData.image}`);
     }
 
     function renderCardMove(targetCard) {
@@ -182,67 +204,14 @@ $(document).ready(function() {
         $(`.cardBoxplay img`).attr('src', `${deck[targetCard].images.png}`);
     }
 
-    function flipCheck(targetCard, tier) {
-        // crawl through tiers on currentBoard to see if anything needs to be flipped
-        let tiers = ['firstTier', 'secondTier', 'thirdTier', 'fourthTier'];
-        let flipInfo = [];
-
-        if (tier === 'fourthTier') {
-            for (var i = 0; i < currentBoard[tier].length - 1; i++) {
-                if (currentBoard[tier][i].addedToPlayPile === true && currentBoard[tier][i + 1].addedToPlayPile === true) {
-                    let flipItem = {};
-                    flipItem.flipNeeded = true;
-                    flipItem.flipIndex = i;
-                    flipItem.flipTier = 'thirdTier';
-                    flipInfo.push(flipItem);
+    function flipCheck() {
+        for (var node in nodeObj) {
+            if (nodeObj[node].left() !== undefined && nodeObj[node].right() !== undefined) {
+                if (nodeObj[node].left().data.addedToPlayPile && nodeObj[node].right().data.addedToPlayPile) {
+                    turnCardOver(nodeObj[node].data);
                 }
             }
-        } else if (tier === 'thirdTier') {
-            for (var i = 0; i < currentBoard[tier].length - 1; i++) {
-                if (currentBoard[tier][i].addedToPlayPile === true && currentBoard[tier][i + 1].addedToPlayPile === true) {
-                    let flipItem = {};
-                    flipItem.flipTier = 'secondTier';
-                    flipItem.flipNeeded = true;
-                    if (i < 2) {
-                        flipItem.flipIndex = i;
-                    } else if (i < 5) {
-                        flipItem.flipIndex = i - 1;
-                    } else {
-                        flipItem.flipIndex = i - 2;
-                    }
-                    if (i === 2 || i === 5) {
-                        flipItem.flipNeeded = false;
-                    }
-                    flipInfo.push(flipItem);
-                }
-            }
-        } else if (tier === 'secondTier') {
-            let i = 0;
-            if (currentBoard[tier][i].addedToPlayPile === true && currentBoard[tier][i + 1].addedToPlayPile === true) {
-                let flipItem = {};
-                flipItem.flipTier = 'firstTier';
-                flipItem.flipNeeded = true;
-                flipItem.flipIndex = i;
-                flipInfo.push(flipItem);
-            }
-            i = 2;
-            if (currentBoard[tier][i].addedToPlayPile === true && currentBoard[tier][i + 1].addedToPlayPile === true) {
-                let flipItem = {};
-                flipItem.flipTier = 'firstTier';
-                flipItem.flipNeeded = true;
-                flipItem.flipIndex = 1;
-                flipInfo.push(flipItem);
-            }
-            i = 4;
-            if (currentBoard[tier][i].addedToPlayPile === true && currentBoard[tier][i + 1].addedToPlayPile === true) {
-                let flipItem = {};
-                flipItem.flipTier = 'firstTier';
-                flipItem.flipNeeded = true;
-                flipItem.flipIndex = 2;
-                flipInfo.push(flipItem);
-            }
-        }
-        return flipInfo;
+        };
     }
 
     function validMove(target) {
@@ -276,6 +245,12 @@ $(document).ready(function() {
     }
 
     function newHand() {
+        pyramidOneDone = false;
+        pyramidTwoDone = false;
+        pyramidThreeDone = false;
+        firstTier = [1, 11, 20];
+        secondTier = [2, 3, 12, 13, 21, 22];
+        thirdTier = [4, 5, 6, 14, 15, 16, 23, 24, 25];
         clearStage();
         resetScore();
         if (deckID !== null) {
@@ -362,8 +337,8 @@ $(document).ready(function() {
     }
 
     // populate HTML with card image and code as id with tier location as first word of alt attribute
-    function popCards(cardArr, tier) {
-        if (tier === 'pile') {
+    function popCards(cardArr, location) {
+        if (location === 'pile') {
             for (var i = 0; i < cardArr.length; i++) {
                 let $card = $('<img></img>');
                 let $cardDiv = $('<div></div>');
@@ -371,14 +346,14 @@ $(document).ready(function() {
                 $card.addClass('card added')
                     .attr('id', cardArr[i].code)
                     .attr('src', cardArr[i]['image'])
-                    .attr('alt', `${tier} Back of playing card`);
+                    .attr('alt', `${location} Back of playing card`);
                 if (i > 0) {
                     $cardDiv.addClass('pile');
                 }
                 $cardDiv.append($card);
-                $(`.cardBox${tier}`).append($cardDiv);
+                $(`.cardBox${location}`).append($cardDiv);
             }
-        } else if (tier === 'play') {
+        } else if (location === 'play') {
             for (var i = 0; i < cardArr.length; i++) {
                 let $card = $('<img></img>');
                 let $cardDiv = $('<div></div>');
@@ -386,9 +361,9 @@ $(document).ready(function() {
                 $card.addClass('card added')
                     .attr('id', cardArr[i].code)
                     .attr('src', cardArr[i]['image'])
-                    .attr('alt', `${tier} Back of playing card`);
+                    .attr('alt', `${location} Back of playing card`);
                 $cardDiv.append($card);
-                $(`.cardBox${tier}`).append($cardDiv);
+                $(`.cardBox${location}`).append($cardDiv);
             }
         }
     };
@@ -433,14 +408,11 @@ $(document).ready(function() {
     // creates a new GameBoard and fills it with API data along with custom properties and methods
     // also adds all those new card objects to a deck object
     function populateBoard() {
-        $.ajax({
-            url: `https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`,
+        $.ajax({            url: `https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`,
             method: 'GET',
             success: function(data) {
 
-                currentBoard = null;
-                createBoardStructure();
-
+                currentBoard = new GameBoard();
                 // adds flip to each card object, cant get prototype thing to work
                 data.cards.map(function(elem) {
                     elem.inPlay = false;
@@ -470,7 +442,7 @@ $(document).ready(function() {
                         currentBoard.pile.push(data.cards[i])
                     }
                 }
-                currentBoard.pile[currentBoard.pile.length-1].inPlay = true;
+                currentBoard.pile[currentBoard.pile.length - 1].inPlay = true;
                 currentBoard.play.push(data.cards[data.cards.length - 1])
                 for (var i = 0; i < data.cards.length; i++) {
                     deck[data.cards[i].code] = data.cards[i];
