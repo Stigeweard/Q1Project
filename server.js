@@ -7,12 +7,11 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.get('/users', (req, res) => {
-    knex('users').select().then(users => {
-        res.send(users);
-    });
-});
+app.use(express.static('public'));
+const userRoutes = require('./routes/userRoutes');
 
-app.listen(3000, () => console.log("Listening on localhost:3000"));
+app.use(userRoutes)
+
+app.listen(8000, () => console.log('Listening on localhost:8000'));
 
 module.exports = app
