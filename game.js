@@ -162,7 +162,9 @@ $(document).ready(function() {
     }
 
     function refreshScore() {
-        $('#scoreSpan').text(currentScore)
+        $('#scoreSpan').text(currentScore);
+        $('#scoreStreakSpan').text(scoreStreak);
+
     }
 
     function pileClick(e) {
