@@ -220,7 +220,6 @@ $(document).ready(function() {
 
     function resetHand() {
         clearStage();
-        retrieveDeck();
         currentBoard = jQuery.extend(true, {}, boardCopy);
         uncover(currentBoard);
         resetScore();
