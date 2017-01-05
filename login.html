@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TriPeaks Solitaire</title>
+
+    <!-- JQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+    <!-- Custom font -->
+    <link href="https://fonts.googleapis.com/css?family=Varela+Round" rel="stylesheet">
+
+    <!-- My styling -->
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="./images/favicon.ico">
+    <link rel="icon" href="./images/favicon.ico">
+
+    <!-- Javascript login file -->
+    <script src="login.js"></script>
+
+
+</head>
+
+<body>
+
+    <div class="headerBox">
+        <div class="header">
+            <div id="reset" class="leftHead">Reset</div>
+            <div class="midHead">TriPeaks Solitaire</div>
+            <div id="newHand" class="rightHead">New Hand</div>
+        </div>
+    </div>
+
+    <div class="board">
+        <div class="tableBox">
+            <div class="outerLoginBox">
+
+                <div class="loginBox">
+                    <div>
+                        <label>Username: <input type="text"></label><br>
+                        <label>Password: &nbsp<input type="password"></label><br>
+                    </div>
+                    <div class="loginButton">Login</div>
+                </div>
+
+            </div>
+        </div>
+        <footer class="stickyFooter">
+            <div class="score">
+                <div>Score: <span id="scoreSpan"></span></div>
+                <div>Streak: <span id="scoreStreakSpan"></span></div>
+            </div>
+        </footer>
+
+    </div>
+
+
+</body>
+
+</html>

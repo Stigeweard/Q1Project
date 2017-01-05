@@ -1,27 +1,10 @@
 $(document).ready(function() {
 
-    if (!Function.prototype.bind) { // check if native implementation available
-        Function.prototype.bind = function() {
-            var fn = this,
-                args = Array.prototype.slice.call(arguments),
-                object = args.shift();
-            return function() {
-                return fn.apply(object,
-                    args.concat(Array.prototype.slice.call(arguments)));
-            };
-        };
-    }
-
     // IMPORTANT NOTES:
     // * for some reason adblock plugin will cause bugs
     // * first tier is the top tier (3 total cards)
-    // * fourth tier is the base of the pyramids
-    // * two sources of truth for card data at the moment currentBoard and deck
     // * Alt text doesn't currently change on flipping
-    // * how to set up data so that theres one source of truth and site is generated from that
     // TODO: incorporate image changing on addToPlay function
-    // TODO: currently flipcheck doesnt keep track of cards that have already been flipped
-    // TODO: fix reset button functionality
 
     let deckID = null;
     let currentBoard = null;
@@ -76,12 +59,6 @@ $(document).ready(function() {
         }
     };
 
-    // GameBoard.prototype.traverseBF = function(callback) {
-    //     for (var i = 0; i < this.root.length; i++) {
-    //
-    //     };
-    // };
-
     function CardNode(data, position, children) {
         this.data = data || null;
         this.position = position;
@@ -96,6 +73,7 @@ $(document).ready(function() {
             console.log('no chillrens');
         }
     }
+
     CardNode.prototype.right = function() {
         if (this.children.length > 1) {
             return this.children[1];
@@ -133,7 +111,6 @@ $(document).ready(function() {
     }
 
     function victoryCheck() {
-
         if (nodeObj[1].data.addedToPlayPile && !pyramidOneDone) {
             console.log('done with one');
             pyramidOneDone = true;
@@ -232,7 +209,6 @@ $(document).ready(function() {
         target = target.replace('0', '10');
         inPlay = parseInt(inPlay);
         target = parseInt(target);
-        // TODO: TEST THIS!!
         if (target === inPlay + 1 || target === inPlay - 1 || (target === 1 && inPlay === 13) || (target === 13 && inPlay === 1)) {
             return true;
         } else {
@@ -286,11 +262,9 @@ $(document).ready(function() {
         popNodeArray(firstTier);
         popNodeArray(secondTier);
         popNodeArray(thirdTier);
-
         popPyramids(firstTier, 'firstTier');
         popPyramids(secondTier, 'secondTier');
         popPyramids(thirdTier, 'thirdTier');
-
     }
 
     function popNodeArray(tier) {
@@ -302,7 +276,6 @@ $(document).ready(function() {
     function popPyramids(cardArr, tier) {
         let cardsPerPyramid = cardArr.length / 3;
         let image = null;
-        // TODO: make card face hidden
         for (var i = 0; i < cardsPerPyramid; i++) {
             let $card = $('<img></img>');
             let $cardDiv = $('<div></div>');
@@ -413,16 +386,13 @@ $(document).ready(function() {
         $.ajax({            url: `https://deckofcardsapi.com/api/deck/${deckID}/draw/?count=52`,
             method: 'GET',
             success: function(data) {
-
                 currentBoard = new GameBoard();
                 // adds flip to each card object, cant get prototype thing to work
                 data.cards.map(function(elem) {
                     elem.inPlay = false;
-                    // elem.boardLoc = null;
                     elem.addedToPlayPile = false;
                     elem.addToPlay = function() {
                         this.addedToPlayPile = true;
-                        // this.boardLoc = 'play'
                     }
                     elem.flip = function() {
                         let pngCard = this.images.png
@@ -450,7 +420,6 @@ $(document).ready(function() {
                     deck[data.cards[i].code] = data.cards[i];
                 }
                 uncover(currentBoard);
-
             },
             error: errorMsg
         })
