@@ -25,16 +25,14 @@ $(document).ready(function() {
         for (var i = 0; i < users.length; i++) {
             if (userObj.username === users[i].name) {
                 loginNeeded = true;
-                loginAndRedirect(userObj)
+                $.post('/session', userObj);
+                // window.location.replace('game.html');
             }
         }
         if (!loginNeeded) {
             $.post('/users', userObj);
+            $.post('/session', userObj);
         }
-    }
-
-    function loginAndRedirect(userObj) {
-        // do this
     }
 
 });

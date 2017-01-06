@@ -18,16 +18,20 @@
   "homepage": "https://github.com/Stigeweard/Q2Project#readme",
   "devDependencies": {
     "chai": "^3.5.0",
+    "cookie-session": "^2.0.0-alpha.2",
+    "dotenv": "^2.0.0",
     "mocha": "^3.2.0",
     "supertest": "^2.0.1"
   },
   "dependencies": {
     "bcrypt-as-promised": "^1.1.0",
     "body-parser": "^1.15.2",
+    "consolidate": "^0.14.5",
     "express": "^4.14.0",
     "knex": "^0.12.6",
     "path": "^0.12.7",
     "pg": "^6.1.2",
-    "serve-favicon": "^2.3.2"
+    "serve-favicon": "^2.3.2",
+    "swig": "^1.4.2"
   }
 }

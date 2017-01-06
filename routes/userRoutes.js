@@ -4,6 +4,7 @@ const express = require('express');
 const knex = require('../knex');
 const router = express.Router();
 const bcrypt = require('bcrypt-as-promised');
+const path = require('path');
 
 
 router.get('/users', (req, res) => {
@@ -83,14 +84,13 @@ router.post('/session', (req, res, next) => {
 
                 throw err;
             }
-
             user = row
-
             return bcrypt.compare(password, row.hashed_password);
         })
         .then(() => {
+            console.log('hallo');
             req.session.userId = user.id;
-            res.sendStatus(200);
+            res.redirect('/game.html');
         })
         .catch(bcrypt.MISMATCH_ERROR, () => {
             const err = new Error('Unauthorized');
@@ -103,7 +103,7 @@ router.post('/session', (req, res, next) => {
         });
 });
 
-app.delete('/session', (req, res) => {
+router.delete('/session', (req, res) => {
     req.session = null;
     res.sendStatus(200);
 });
