@@ -20,18 +20,36 @@ $(document).ready(function() {
         })
     }
 
+    function sessionAJAX(userObj) {
+        console.log('sessionAJAX');
+        $.ajax({
+            url: '/session',
+            method: 'POST',
+            data: userObj,
+            success: function(data) {
+                console.log(data);
+                console.log('ayy lmao');
+                window.location.replace('/game');
+            },
+            error: (err)=>{
+                console.log('dun errd:', err);
+            }
+        })
+    }
+
     function checkUser(users, userObj) {
         let loginNeeded = false;
         for (var i = 0; i < users.length; i++) {
             if (userObj.username === users[i].name) {
                 loginNeeded = true;
-                $.post('/session', userObj);
+                sessionAJAX(userObj);
                 // window.location.replace('game.html');
             }
         }
         if (!loginNeeded) {
             $.post('/users', userObj);
-            $.post('/session', userObj);
+            sessionAJAX(userObj);
+
         }
     }
 
