@@ -1,7 +1,7 @@
 // Update with your config settings.
 
 module.exports = {
-// process.env.HEROKU_POSTGRESQL_YELLOW_URL
+    // process.env.HEROKU_POSTGRESQL_YELLOW_URL
     development: {
         client: 'pg',
         connection: 'postgres://localhost/tripeaks_dev',
@@ -18,9 +18,9 @@ module.exports = {
         // debug:true
     },
 
-  production: {
-    client: 'pg',
-    connection: process.env.DATABASE_URL,
-  }
+    production: {
+        client: 'pg',
+        connection: process.env.DATABASE_URL,
+    }
 
 };

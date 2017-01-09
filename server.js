@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const path = require('path');
 const cookieSession = require('cookie-session');
-const dotenv = require('dotenv').config({silent: true});
+// const dotenv = require('dotenv').config({silent: true});
 const ejs = require('ejs');
 const port = process.env.port || 8000;
 app.use(bodyParser.urlencoded({
