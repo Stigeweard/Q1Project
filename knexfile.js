@@ -4,7 +4,7 @@ module.exports = {
 
     development: {
         client: 'pg',
-        connection: HEROKU_POSTGRESQL_YELLOW_URL,
+        connection: process.env.HEROKU_POSTGRESQL_YELLOW_URL,
         ssl: true
     },
 
