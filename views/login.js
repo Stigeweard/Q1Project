@@ -25,6 +25,7 @@ $(document).ready(function() {
             data: userObj,
             success: function(data) {
                 window.location.replace('/game');
+                // TODO: lookup altern
             },
             error: (err)=>{
                 $('#error').text('Wrong password');
