@@ -4,7 +4,8 @@ module.exports = {
 
     development: {
         client: 'pg',
-        connection: 'postgres://localhost/tripeaks_dev'
+        connection: HEROKU_POSTGRESQL_YELLOW_URL,
+        ssl: true
     },
 
     test: {
