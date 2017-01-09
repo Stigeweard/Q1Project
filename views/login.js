@@ -46,7 +46,7 @@ $(document).ready(function() {
         if (!loginNeeded) {
             $.post('/users', userObj);
             $('#error').text('Username registered! Press login again');
-            $('#error').css({'color': 'green'});
+            $('#error').css({'color': 'green'})
         }
     }
 });

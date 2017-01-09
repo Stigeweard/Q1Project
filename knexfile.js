@@ -10,7 +10,7 @@ module.exports = {
 
     test: {
         client: 'pg',
-        connection: 'postgres://localhost/tripeaks_dev',
+        connection: 'postgres://localhost/tripeaks_test',
         pool: {
             min: 1,
             max: 5

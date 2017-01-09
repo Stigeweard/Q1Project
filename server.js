@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const favicon = require('serve-favicon');
 const path = require('path');
 const cookieSession = require('cookie-session');
+// uncomment out below line to run tests (mocha), comment out for deploying to heroku
 // const dotenv = require('dotenv').config({silent: true});
 const ejs = require('ejs');
 const port = process.env.PORT || 8000;

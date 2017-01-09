@@ -12,5 +12,5 @@ https://trello.com/b/98xJQDXn/q1tripeaks
 
 TODO:
 limit username length to 8 characters
-change it so that server does redirect and validation check?
-give table classes for styling?
+change it so that server does redirect and validation check - no open routes for users?
+figure out how to make testing easier
