@@ -82,6 +82,30 @@ $(document).ready(function() {
         }
     }
 
+    function updateHiScores(hiScoreData) {
+        let places = ['first', 'second', 'third'];
+        for (var i = 0; i < hiScoreData.length; i++) {
+            let place = places[i]
+            console.log(place, hiScoreData[i].name);
+            $(`#${place}Place`).text(hiScoreData[i].name);
+            $(`#${place}PlaceScore`).text(hiScoreData[i].score);
+        }
+    }
+
+    function hiScoreAJAX() {
+        console.log('hiscore ajax');
+        $.ajax({
+            url: '/scores',
+            method: 'GET',
+            success: function(data) {
+                updateHiScores(data);
+            },
+            error: (err)=>{
+                console.log('scores get failed:', err);
+            }
+        })
+    }
+
     function fetchNodes(arr) {
         let nodeList = [];
         if (arr !== null) {
@@ -109,6 +133,9 @@ $(document).ready(function() {
         victoryCheck();
         refreshScore();
     }
+    function submitScore() {
+        $.post('/scores', {currentScore})
+    }
 
     function victoryCheck() {
         if (nodeObj[1].data.addedToPlayPile && !pyramidOneDone) {
@@ -127,8 +154,9 @@ $(document).ready(function() {
             currentScore += 15;
         }
         if (pyramidOneDone && pyramidTwoDone && pyramidThreeDone) {
-            console.log('done with all');
             currentScore += 15;
+            console.log('done with all, submitting score: ', currentScore);
+            submitScore();
         }
     }
 
@@ -236,6 +264,7 @@ $(document).ready(function() {
         firstTier = [1, 11, 20];
         secondTier = [2, 3, 12, 13, 21, 22];
         thirdTier = [4, 5, 6, 14, 15, 16, 23, 24, 25];
+        hiScoreAJAX()
         clearStage();
         resetScore();
         if (deckID !== null) {
@@ -433,6 +462,8 @@ $(document).ready(function() {
                 }
                 boardCopy = jQuery.extend(true, {}, currentBoard);
                 uncover(currentBoard);
+
+
             },
             error: errorMsg
         })

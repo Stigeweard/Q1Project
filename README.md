@@ -8,3 +8,9 @@ Implement TriPeaks solitaire with scoring system
 API - playing card API
 
 https://trello.com/b/98xJQDXn/q1tripeaks
+
+
+TODO:
+limit username length to 8 characters
+change it so that server does redirect and validation check?
+give table classes for styling?

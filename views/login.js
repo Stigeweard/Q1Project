@@ -3,11 +3,9 @@ $(document).ready(function() {
     $('#login').click(userAJAX);
 
     function userAJAX() {
-
         let username = $('#username').val();
         let password = $('#password').val();
         let userObj = {username, password};
-
         $.ajax({
             url: '/users',
             method: 'GET',
@@ -15,7 +13,7 @@ $(document).ready(function() {
                 checkUser(data, userObj);
             },
             error: (err)=>{
-                console.log('dun errd:', err);
+                console.log('users get failed:', err);
             }
         })
     }
@@ -28,14 +26,17 @@ $(document).ready(function() {
             data: userObj,
             success: function(data) {
                 console.log(data);
-                console.log('ayy lmao');
                 window.location.replace('/game');
+                // hiScoreAJAX();
             },
             error: (err)=>{
-                console.log('dun errd:', err);
+                console.log('session post failed:', err);
             }
         })
+
     }
+
+
 
     function checkUser(users, userObj) {
         let loginNeeded = false;
@@ -43,7 +44,6 @@ $(document).ready(function() {
             if (userObj.username === users[i].name) {
                 loginNeeded = true;
                 sessionAJAX(userObj);
-                // window.location.replace('game.html');
             }
         }
         if (!loginNeeded) {

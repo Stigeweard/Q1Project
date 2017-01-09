@@ -65,6 +65,7 @@ body {
 }
 
 .board {
+    /*display: flex;*/
     width: 100%;
     height: 88vh;
     background-color: #0D6AD2;
@@ -164,6 +165,7 @@ body {
 }
 
 .stickyFooter {
+    pointer-events: none;
     position: absolute;
     bottom: 0;
     width: 100%;
@@ -187,6 +189,22 @@ body {
     font-size: 2vw;
 }
 
+table, th, td {
+    font-size: 1.5vw;
+    margin: 0 auto;
+    border: 1px solid #46303a;
+    border-collapse: collapse;
+    vertical-align: middle;
+}
+
+th {
+    width: 50%;
+}
+
+.scoreNumbers {
+    color: white;
+}
+
 .tableBox {
     display: table;
     position: absolute;
@@ -206,8 +224,8 @@ body {
     background-color: #7E6B8F;
     border: 4px inset #46303a;
     border-radius: 8px;
-    width: 50%;
-    height: 40%;
+    width: 40%;
+    height: 20%;
     margin: 0 auto;
     align-items: center;
     justify-content: center;

@@ -7,7 +7,7 @@ const path = require('path');
 const cookieSession = require('cookie-session');
 const dotenv = require('dotenv').config();
 const ejs = require('ejs');
-
+const port = process.env.port || 8000;
 app.use(bodyParser.urlencoded({
     extended: true
 }));
@@ -24,6 +24,6 @@ const userRoutes = require('./routes/userRoutes');
 
 app.use(userRoutes)
 
-app.listen(8000, () => console.log('Listening on localhost:8000'));
+app.listen(port, () => console.log('Listening on port:', port));
 
 module.exports = app;

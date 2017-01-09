@@ -10,6 +10,18 @@ router.get('/', (req, res) => {
     res.render('index')
 });
 
+router.post('/scores', (req, res, next) => {
+    console.log('before knex');
+    knex('scores').insert({
+        'score': req.body.currentScore,
+        'user_id': req.session.userId
+    }).catch((err) => {
+        next(err);
+    });
+    console.log('after');
+    res.send('submitted score!')
+})
+
 router.get('/game', (req, res) => {
     console.log('hit game route');
     res.render('gameBoard')
@@ -19,6 +31,17 @@ router.get('/users', (req, res) => {
     knex('users').then((users) => {
         res.send(users);
     });
+});
+
+router.get('/scores', (req, res) => {
+    knex('scores')
+        .join('users', 'users.id', '=', 'scores.user_id')
+        .orderBy('score', 'desc')
+        .limit(3)
+        .then((users) => {
+            console.log(users);
+            res.send(users);
+        });
 });
 
 router.post('/users', (req, res, next) => {
@@ -37,7 +60,7 @@ router.post('/users', (req, res, next) => {
         return next(err);
     }
     knex('users')
-        // .select(knex.raw('1=1'))
+        .select(knex.raw('1=1'))
         .where('name', username)
         .first()
         .then((exists) => {
@@ -98,7 +121,7 @@ router.post('/session', (req, res, next) => {
         })
         .then(() => {
             req.session.userId = user.id;
-            res.send('logged in!')
+            res.send('' + user.id)
         })
         .catch(bcrypt.MISMATCH_ERROR, () => {
             const err = new Error('Unauthorized');
