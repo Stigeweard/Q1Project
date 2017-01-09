@@ -1,36 +1,37 @@
 {
-  "name": "tripeaks-solitaire",
-  "version": "1.0.0",
-  "description": "Tri-peaks solitaire project implementing a tree data structure",
-  "main": "server.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Stigeweard/Q2Project.git"
-  },
-  "author": "Charles Harding",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Stigeweard/Q2Project/issues"
-  },
-  "homepage": "https://github.com/Stigeweard/Q2Project#readme",
-  "devDependencies": {
-    "chai": "^3.5.0",
-    "cookie-session": "^2.0.0-alpha.2",
-    "dotenv": "^2.0.0",
-    "mocha": "^3.2.0",
-    "supertest": "^2.0.1"
-  },
-  "dependencies": {
-    "bcrypt-as-promised": "^1.1.0",
-    "body-parser": "^1.15.2",
-    "ejs": "^2.5.5",
-    "express": "^4.14.0",
-    "knex": "^0.12.6",
-    "path": "^0.12.7",
-    "pg": "^6.1.2",
-    "serve-favicon": "^2.3.2"
-  }
+    "name": "tripeaks-solitaire",
+    "version": "1.0.0",
+    "description": "Tri-peaks solitaire project implementing a tree data structure",
+    "main": "server.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "heroku-postbuild": "knex migrate:latest"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Stigeweard/Q2Project.git"
+    },
+    "author": "Charles Harding",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/Stigeweard/Q2Project/issues"
+    },
+    "homepage": "https://github.com/Stigeweard/Q2Project#readme",
+    "devDependencies": {
+        "chai": "^3.5.0",
+        "mocha": "^3.2.0",
+        "supertest": "^2.0.1"
+    },
+    "dependencies": {
+        "cookie-session": "^2.0.0-alpha.2",
+        "dotenv": "^2.0.0",
+        "bcrypt-as-promised": "^1.1.0",
+        "body-parser": "^1.15.2",
+        "ejs": "^2.5.5",
+        "express": "^4.14.0",
+        "knex": "^0.12.6",
+        "path": "^0.12.7",
+        "pg": "^6.1.2",
+        "serve-favicon": "^2.3.2"
+    }
 }
