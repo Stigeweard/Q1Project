@@ -19,24 +19,20 @@ $(document).ready(function() {
     }
 
     function sessionAJAX(userObj) {
-        console.log('sessionAJAX');
         $.ajax({
             url: '/session',
             method: 'POST',
             data: userObj,
             success: function(data) {
-                console.log(data);
                 window.location.replace('/game');
-                // hiScoreAJAX();
             },
             error: (err)=>{
+                $('#error').text('Wrong password');
                 console.log('session post failed:', err);
             }
         })
 
     }
-
-
 
     function checkUser(users, userObj) {
         let loginNeeded = false;
@@ -49,8 +45,6 @@ $(document).ready(function() {
         if (!loginNeeded) {
             $.post('/users', userObj);
             sessionAJAX(userObj);
-
         }
     }
-
 });

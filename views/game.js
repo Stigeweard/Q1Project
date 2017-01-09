@@ -86,14 +86,12 @@ $(document).ready(function() {
         let places = ['first', 'second', 'third'];
         for (var i = 0; i < hiScoreData.length; i++) {
             let place = places[i]
-            console.log(place, hiScoreData[i].name);
             $(`#${place}Place`).text(hiScoreData[i].name);
             $(`#${place}PlaceScore`).text(hiScoreData[i].score);
         }
     }
 
     function hiScoreAJAX() {
-        console.log('hiscore ajax');
         $.ajax({
             url: '/scores',
             method: 'GET',
@@ -275,7 +273,6 @@ $(document).ready(function() {
     }
 
     function clearStage() {
-        console.log('hallo');
         $('.added').remove();
         $('.cardDiv').remove();
     }

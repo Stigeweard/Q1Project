@@ -39,16 +39,17 @@
     <div class="board">
         <div class="tableBox">
             <div class="outerLoginBox">
-                <form action="/session" method="POST">
-                    <div class="loginBox">
-                        <div>
-                            <label>Username: <input id="username" name="name" type="text"></label><br>
-                            <label>Password: &nbsp<input id="password" name="hashed_password" type="password"></label><br>
-                        </div>
-                        <div id="login" class="loginButton">Login</div>
+                <div class="loginBox">
+                    <div class="registerText">
+                        Register/ Sign in
                     </div>
-                </form>
-
+                    <div class="verticalLine">
+                        <label>Username: <input id="username" name="name" type="text"></label><br>
+                        <label>Password: &nbsp<input id="password" name="hashed_password" type="password"></label><br>
+                    </div>
+                    <div id="login" class="loginButton">Login</div>
+                </div>
+                <div class="errorBox" id="error"></div>
             </div>
         </div>
         <footer class="stickyFooter">
