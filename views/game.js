@@ -1,9 +1,5 @@
 $(document).ready(function() {
 
-    // IMPORTANT NOTES:
-    // * for some reason adblock plugin will cause bugs
-    // * first tier is the top tier (3 total cards)
-
     let deckID = null;
     let currentBoard = null;
     let deck = {};
@@ -14,6 +10,7 @@ $(document).ready(function() {
     let pyramidThreeDone = false;
     let boardCopy = null;
     let reseted = false;
+    // edgelist
     const logicArr = [
         [1, 11, 20],
         [2, 3],
@@ -82,6 +79,22 @@ $(document).ready(function() {
         }
     }
 
+    function fetchNodes(arr) {
+        let nodeList = [];
+        if (arr !== null) {
+            arr.forEach(elem => {
+                if (!nodeObj[elem]) {
+                    let newNode = new CardNode(null, elem, fetchNodes(logicArr[elem]));
+                    nodeObj[elem] = newNode;
+                    nodeList.push(newNode);
+                } else {
+                    nodeList.push(nodeObj[elem]);
+                }
+            })
+        }
+        return nodeList;
+    };
+
     function updateHiScores(hiScoreData) {
         let places = ['first', 'second', 'third'];
         for (var i = 0; i < hiScoreData.length; i++) {
@@ -103,22 +116,6 @@ $(document).ready(function() {
             }
         })
     }
-
-    function fetchNodes(arr) {
-        let nodeList = [];
-        if (arr !== null) {
-            arr.forEach(elem => {
-                if (!nodeObj[elem]) {
-                    let newNode = new CardNode(null, elem, fetchNodes(logicArr[elem]));
-                    nodeObj[elem] = newNode;
-                    nodeList.push(newNode);
-                } else {
-                    nodeList.push(nodeObj[elem]);
-                }
-            })
-        }
-        return nodeList;
-    };
 
     function resetScore() {
         currentScore = 0;
@@ -155,6 +152,7 @@ $(document).ready(function() {
             currentScore += 15;
             console.log('done with all, submitting score: ', currentScore);
             submitScore();
+            alert(`You won with a score of ${currentScore}!`)
         }
     }
 
@@ -459,7 +457,6 @@ $(document).ready(function() {
                 }
                 boardCopy = jQuery.extend(true, {}, currentBoard);
                 uncover(currentBoard);
-
 
             },
             error: errorMsg

@@ -47,8 +47,8 @@ router.get('/scores', (req, res) => {
 router.post('/users', (req, res, next) => {
     const username = req.body.username;
     const password = req.body.password;
-    if (!username || username.trim() === '') {
-        const err = new Error('Username must not be blank');
+    if (!username || username.trim() === '' || username.length > 8) {
+        const err = new Error('Username must not be blank or greater than 8 characters');
         err.status = 400;
 
         return next(err);
@@ -77,6 +77,7 @@ router.post('/users', (req, res, next) => {
                 'hashed_password': hashed_password
             });
         })
+
         .then(() => {
             res.sendStatus(200);
         })

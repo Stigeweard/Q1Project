@@ -19,7 +19,6 @@ app.use(cookieSession({
 }));
 
 app.use(express.static('views'));
-// app.use(favicon(path.join(__dirname,'views','images','favicon.ico')));
 app.set('view engine', 'ejs');
 const userRoutes = require('./routes/userRoutes');
 

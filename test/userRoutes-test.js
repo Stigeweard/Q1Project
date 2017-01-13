@@ -9,19 +9,19 @@ beforeEach(done => {
     Promise.all([
             knex('users').insert({
                 name: 'bruh',
-                hashed_password: 'asdfa',
+                hashed_password: '$2a$12$IPOhMu0dNHyf8qIVqdw8uO2NZQJR4nPCmvoUouHB8OQ8YAy7DtIva',
                 created_at: '2017-01-09T17:16:50.530Z',
                 updated_at: '2017-01-09T17:16:50.530Z'
             }),
             knex('users').insert({
                 name: 'bigdog',
-                hashed_password: 'fasdd',
+                hashed_password: '$2b$12$IPOhMu0dNHyf8qIVqdw8uO2NZQJR4nPCmvoUouHB8OQ8YAy7DtIva',
                 created_at: '2017-01-09T17:16:50.530Z',
                 updated_at: '2017-01-09T17:16:50.530Z'
             }),
             knex('users').insert({
                 name: 'minnie',
-                hashed_password: 'brrer',
+                hashed_password: '$2c$12$IPOhMu0dNHyf8qIVqdw8uO2NZQJR4nPCmvoUouHB8OQ8YAy7DtIva',
                 created_at: '2017-01-09T17:16:50.530Z',
                 updated_at: '2017-01-09T17:16:50.530Z'
             })
@@ -46,11 +46,6 @@ beforeEach(done => {
                 })
             ])
         })
-        // .then(() => {
-        //     Promise.all([
-        //         knex('users').dropColumns('created_at', 'updated_at')
-        //     ])
-        // })
         .then(() => done());
 });
 
@@ -71,26 +66,26 @@ describe('GET /scores', () => {
             .expect(200, done);
     });
 
-    it('returns an array of all sloth objects when responding with JSON', done => {
+    it('returns an array of all user objects when responding with JSON', done => {
         request(app)
             .get('/users')
             .end((err, res) => {
                 expect(res.body).to.deep.equal([{
                     id: 1,
                     name: 'bruh',
-                    hashed_password: 'asdfa',
+                    hashed_password: '$2a$12$IPOhMu0dNHyf8qIVqdw8uO2NZQJR4nPCmvoUouHB8OQ8YAy7DtIva',
                     created_at: '2017-01-09T17:16:50.530Z',
                     updated_at: '2017-01-09T17:16:50.530Z'
                 }, {
                     id: 2,
                     name: 'bigdog',
-                    hashed_password: 'fasdd',
+                    hashed_password: '$2b$12$IPOhMu0dNHyf8qIVqdw8uO2NZQJR4nPCmvoUouHB8OQ8YAy7DtIva',
                     created_at: "2017-01-09T17:16:50.530Z",
                     updated_at: "2017-01-09T17:16:50.530Z"
                 }, {
                     id: 3,
                     name: 'minnie',
-                    hashed_password: 'brrer',
+                    hashed_password: '$2c$12$IPOhMu0dNHyf8qIVqdw8uO2NZQJR4nPCmvoUouHB8OQ8YAy7DtIva',
                     created_at: "2017-01-09T17:16:50.530Z",
                     updated_at: "2017-01-09T17:16:50.530Z"
                 }]);
@@ -99,8 +94,8 @@ describe('GET /scores', () => {
     });
 
 });
-/*
-xdescribe('GET /users/:id', () => {
+
+describe('GET /users/:id', () => {
     it('responds with JSON', done => {
         request(app)
             .get('/users/:id')
@@ -238,4 +233,3 @@ xdescribe('DELETE /users/:id', () => {
             });
     });
 });
-*/

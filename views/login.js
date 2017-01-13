@@ -6,16 +6,20 @@ $(document).ready(function() {
         let username = $('#username').val();
         let password = $('#password').val();
         let userObj = {username, password};
-        $.ajax({
-            url: '/users',
-            method: 'GET',
-            success: function(data) {
-                checkUser(data, userObj);
-            },
-            error: (err)=>{
-                console.log('users get failed:', err);
-            }
-        })
+        if (username.length > 8) {
+            $('#error').text('Username must be less than 9 characters');
+        } else {
+            $.ajax({
+                url: '/users',
+                method: 'GET',
+                success: function(data) {
+                    checkUser(data, userObj);
+                },
+                error: (err)=>{
+                    console.log('users get failed:', err);
+                }
+            })
+        }
     }
 
     function sessionAJAX(userObj) {
