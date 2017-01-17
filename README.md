@@ -11,16 +11,12 @@ Ex: Bottom right card is an ace, valid moves are 2 or king. Suit doesn't matter.
 You are awarded your current score streak in points for every consecutive move you make without hitting the pile (bottom left) which resets your streak and subtracts 5 from your score.
 
 ## Important notes/known issues
-
-Implement TriPeaks solitaire with scoring system
-API - playing card API
-
-https://trello.com/b/98xJQDXn/q1tripeaks
+- adblocker will block card images because they are urls (bad, its on the todo list)
+- all work is on treeStructure
 
 
-Notes
 
 TODO:
-limit username length to 8 characters
 change it so that server does redirect and validation check - no open routes for users?
 figure out how to make testing easier
+download card images into images folder
